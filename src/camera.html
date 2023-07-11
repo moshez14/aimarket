@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+        <html>
+          <head>
+            <title>צילום תמונה מהמצלמה</title>
+            <script>
+              function capturePhoto() {
+                var video = document.getElementById('video');
+
+                // בודק אם הדפדפן תומך בצילום מהמצלמה
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(function(stream) {
+                    video.srcObject = stream;
+                    video.play();
+                  });
+                }
+              }
+
+              function takeSnapshot() {
+                var video = document.getElementById('video');
+                var canvas = document.createElement('canvas');
+                var context = canvas.getContext('2d');
+
+                // מצלמת את התמונה מהווידאו ומעתיקה אותה לקנבס
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // ממיר את התמונה בקנבס למחרוזת Base64
+                var imageBase64 = canvas.toDataURL('image/png');
+
+                // שומר את התמונה בזיכרון המכשיר
+                var link = document.createElement('a');
+                link.href = imageBase64;
+                link.download = 'my_photo.png';
+                link.click();
+              }
+            </script>
+          </head>
+          <body>
+            <h1>צילום תמונה מהמצלמה</h1>
+            <button onclick="capturePhoto()">צלם תמונה</button>
+            <button onclick="takeSnapshot()">שמור תמונה</button>
+            <video id="video" width="400" height="300" autoplay></video>
+          </body>
+        </html>
+  </script>
