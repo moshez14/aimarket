@@ -37,7 +37,9 @@ const SignupFormComponent = () => {
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <input type="tel" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+        <div>
         <button type="submit">Signup</button>
+        </div>
       </form>
       {signupSuccess && <p className="success">Signup successful!</p>}
     {signupError && <p className="error">{signupError}</p>}

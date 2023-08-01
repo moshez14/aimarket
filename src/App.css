@@ -1,104 +1,173 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 body {
-  margin: 0;
-  padding: 0;
+  margin: 1rem; 
+  padding: 1rem;
+  background-color: black;
+  color: white;
   font-family: Arial, sans-serif;
 }
 
-#container {
+.container {
   display: flex;
+  flex-direction: column; 
+  align-items: center;
+  min-height: 150vh;
 }
 
-#menu {
-  background-color: #333;
-  color: #fff;
-  width: 200px;
+.sidebar {
+  background-color: #444;
+  width: 100%;
+  max-width: 250px;
   padding: 20px;
 }
 
-#main {
-  flex: 1;
-  padding: 20px;
+.container select {
+  width: 100%;
+  max-width: 200px;
+  margin: 20px 0;
+}
+
+.container select option {
+  background-color: #444;
+  color: white;
+}
+
+.container button {
+  background-color: orange; /* Orange button background color */
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.video-container video {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200vh;
 }
 
 .box {
-  width: 200px;
-  height: 200px;
-  margin-bottom: 20px;
+  margin: 10px;
   padding: 20px;
-  color: #fff;
-  font-weight: bold;
+  background-color: #333; /* Selection boxes background color*/ 
+  border-radius: 5px;
+  width: 300px;
   text-align: center;
+}
+
+@media (min-width: 768px) {
+
+  .container {
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+  }
+
+  .video-container {
+    height: 300px; 
+  }
+
+}
+/*body {
+
+  margin: 1;
+  padding: 1;
+  background-color: black; /* Black background color for the entire app 
+  color: white; /* White text color for the entire app 
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Center the selection bar vertically 
+}
+
+.sidebar {
+  background-color: #444; /* Sidebar background color 
+  width: 250px;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-top: 20px;
+}
+
+.container select {
+  display: block;
+  margin: 20px auto;
+  background-color: #444; /* Selection bar background color 
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  padding: 8px;
+  width: 200px;
+}
+
+.container select option {
+  background-color: #444;
+  color: white;
+}
+
+.container button {
+  background-color: orange; /* Orange button background color 
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
-#box1 {
-  background-image: url('box1.jpg');
-  background-size: cover;
-  background-position: center;
-  background-color: #333;
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
 }
 
-#box2 {
-  background-image: url('box2.jpg');
-  background-size: cover;
-  background-position: center;
-  background-color: #333;
+.video-container video {
+  max-width: 100%;
+  max-height: 100%;
 }
 
-#box3 {
-  background-image: url('box3.jpg');
-  background-size: cover;
-  background-position: center;
-  background-color: #333;
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 140vh;
 }
 
-#box4 {
-  background-image: url('box4.jpg');
-  background-size: cover;
-  background-position: center;
-  background-color: #333;
-}
-
-/* Styles for the new page */
-
-#new-page {
+.box {
+  margin: 10px;
   padding: 20px;
+  background-color: #333; /* Selection boxes background color 
+  border-radius: 5px;
+  width: 300px;
+  text-align: center;
 }
+*/

@@ -127,8 +127,50 @@ function App() {
   }, []);
 
   return (
+   
+<html>
+<head>
+  <title>AI Website</title>
+  
+</head>
 
-      <div id="container">
+<body>
+  <div id="container">
+    <div id="menu">
+      <h2>Menu</h2>
+      <ul>
+        <li>Home</li>
+        <li>About</li>
+        <li>Contact</li>
+      </ul>
+    </div>
+    <div id="main">
+      <div id="box1" class="box">
+        <p>Box 1</p>
+      </div>
+      <div id="box2" class="box">
+        <p>Box 2</p>
+      </div>
+      <div id="box3" class="box">
+        <p>Box 3</p>
+      </div>
+      <div id="box4" class="box">
+        <p>Box 4</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    
+
+   
+  </script>
+</body>
+
+</html>
+  )};
+export default App;
+   /*   <div id="container">
       
       
         <div id="menu">

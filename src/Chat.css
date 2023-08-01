@@ -1,0 +1,24 @@
+
+
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  height: 300px; 
+  overflow-y: scroll;
+}
+
+.chat-message {
+  margin: 8px;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  background: lightblue;
+  border-radius: 10px 10px 0 10px;
+}
+
+.chat-message.bot {
+  align-self: flex-start;
+  background: lightgrey; 
+  border-radius: 10px 10px 10px 0;
+}

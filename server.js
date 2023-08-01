@@ -106,6 +106,25 @@ app.get('/api/AIModelObject', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching messages' });
   }
 });
+
+const SourceSchema = new mongoose.Schema({
+  name: [String],
+});
+
+const source = mongoose.model('source', SourceSchema);
+app.get('/api/source', async (req, res) => {
+  const { user_ID } = req.query;
+  try {
+    const Sources = await source.find({}, { name: 1 });
+    res.json(Sources);
+    console.log(Sources);
+  } catch (error) {
+    console.error('Error fetching Sources:', error);
+    res.status(500).json({ error: 'An error occurred while fetching Sources' });
+  }
+});
+
+
 // Define the schema for the message
 const messageSchema = new mongoose.Schema({
   name: String,
@@ -117,110 +136,134 @@ app.get('/api/messages', async (req, res) => {
   try {
     const messages = await Message.find({}, { name: 1 });
     res.json(messages);
-    //console.log(messages);
+    console.log(messages);
   } catch (error) {
     console.error('Error fetching messages:', error);
     res.status(500).json({ error: 'An error occurred while fetching messages' });
   }
 });
-// Define the add camera route
-const addcameraSchema = new mongoose.Schema({
-  username:String,
-  name: String,
-  code: String,
-  source: String,
+
+
+app.post('/api/routincheck', async (req, res) => {
+  const { user_ID, routineName } = req.body;
+  console.log('chake:', user_ID, routineName);
+
+  try {
+    const userIdObject = new ObjectId(user_ID);
+    const user = await Login.findById(userIdObject);
+
+    if (user) {
+      const routines = user.usersettings[0].routines;
+      const existingRoutine = routines.find((routine) => routine.RoutineName === routineName);
+      console.log('OK:', existingRoutine);
+      if (existingRoutine) {
+        // If routine already exists, send its parameters as a response
+        res.status(200).json(existingRoutine);
+      } else {
+        // If routine doesn't exist, create a new one and add it to routines array
+        const newRoutine = {
+          RoutineName: routineName,
+          // Add other parameters if needed
+          sourceselected: selectedsource,
+          ModelSelected: selectedmodel,
+          messageselect: message,
+        };
+        routines.push(newRoutine);
+        await user.save();
+        res.status(200).json(newRoutine);
+      }
+    } else {
+      // User not found, return an error response
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
+
 
 app.post('/api/addsourceselected', async (req, res) => {
   const { userid, routineName, selectedsource, selectedmodel, selectedmessage } = req.body;
   console.log({ userid, routineName, selectedsource, selectedmodel, selectedmessage });
- 
+
   try {
     const userIdObject = new ObjectId(userid);
     const user = await Login.findById(userIdObject);
-    console.log(routineName);
     let message = '';
+
     if (user) {
       if (selectedmessage === 'EMAIL') {
-        //const loginData = await Login.findOne({});
         const email = user.email;
-        console.log('Email:', email);
         message = email;
       } else if (selectedmessage === 'SMS' || selectedmessage === 'WHATSAPP') {
-        //const loginData = await Login.findOne({});
         const phone = user.phone;
         console.log('Phone:', phone);
         message = phone;
       } else {
-       // const loginData = await Login.findOne({});
         const email = user.email;
         console.log('Email:', email);
         message = email;
-      };
-       const usersettings = user.usersettings[0];
-       if (!usersettings) {
-         user.usersettings.push({ routines: [] });
-       }
-       const routines = user.usersettings[0].routines;
-       routines.push({
-         RoutineName: routineName,
-         sourceselected: selectedsource,
-         ModelSelected: selectedmodel,
-         messageselect: message,
-       });
-        await user.save();
-        console.log({
-          RoutineName: routineName,
-          sourceselected: selectedsource,
-          ModelSelected: selectedmodel,
-          messageselect: message
-        });
-        console.log('detect');
-        const model = selectedmodel;
-        const rtmp = selectedsource;
-        await axios.post('http://localhost:5000/maifocus/detect/', {
-          model,
-          rtmp,
-          message
-    }, {
-      headers: {
-        'accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-     
-    });
-        res.sendStatus(200);
-     
       }
-    
-  } catch (error) {
-    console.error('Error:', error);
-    res.sendStatus(500);
-  }
-});
-
-app.post('/api/addroutine', async (req, res) => {
-  const { userid, RoutineName } = req.body;
-  console.log({'routine ':RoutineName});
-  try {
-    const userIdObject = new ObjectId(userid);
-    const user = await Login.findById(userIdObject);
-    if (user) {
       if (!user.usersettings || user.usersettings.length === 0) {
         user.usersettings = [{ routines: [] }]; // Create the source array and initialize it with an empty object
       }
-      user.usersettings[0].routines.push({ RoutineName: RoutineName });
-      await user.save();
-      //console.log({ name: RoutineName })
-      res.sendStatus(200);
-    } else {
-      res.sendStatus(404);
+      const routines = user.usersettings[0].routines;
+      const existingRoutineIndex = routines.findIndex((routine) => routine.RoutineName === routineName);
+
+      if (existingRoutineIndex !== -1) {
+        // If routine already exists, update its settings
+        const existingRoutine = routines[existingRoutineIndex];
+        existingRoutine.sourceselected = selectedsource;
+        existingRoutine.ModelSelected = selectedmodel;
+        existingRoutine.messageselect = message;
+        await user.save();
+        console.log('Routine already exists:', existingRoutine);
+        res.status(200).json(existingRoutine); // Send the existingRoutine data back as a response
+      } else {
+        // If routine doesn't exist, create a new one and add it to routines array
+        const newRoutine = {
+          RoutineName: routineName,
+          sourceselected: selectedsource,
+          ModelSelected: selectedmodel,
+          messageselect: message,
+        };
+        routines.push(newRoutine);
+        await user.save();
+        console.log('New Routine added:', newRoutine);
+        res.status(200).json(newRoutine); // Send the newly added routine data as a response
+      }
+
+      console.log({
+        RoutineName: routineName,
+        sourceselected: selectedsource,
+        ModelSelected: selectedmodel,
+        messageselect: message,
+      });
+      console.log('detect');
+
+      const model = selectedmodel;
+      const source = selectedsource;
+      const responsemail = await axios.post('http://localhost:5000/maifocus/detect/', {
+        model,
+        source,
+        message,
+      }, {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      res.status(200).json(responsemail); 
+      // res.sendStatus(200);
     }
   } catch (error) {
-    console.error('Error adding routine to user:', error);
-    res.sendStatus(500);
+    console.error('Error:', error);
+    // res.sendStatus(500);
   }
 });
+
+
 
 // Create the model for the add camera
 //const AddCamera = mongoose.model('AddCamera', addcameraSchema);
@@ -268,30 +311,6 @@ app.post('/api/addfileLink', async (req, res) => {
   }
 });
 
-/*app.post('/api/add-camera', (req, res) => {
-  // Access the add camera data from the request body
-  const { username,name, code, source } = req.body;
-
-  // Save the data to MongoDB
-  const addCameraData = {
-    username,
-    name,
-    code,
-    source,
-  };
-
-// Create the model for the add camera
-const AddCamera = mongoose.model('AddCamera', addcameraSchema);
-  AddCamera.create(addCameraData)
-    .then((data) => {
-      console.log('Camera data saved to MongoDB:', data);
-      res.status(200).json({ message: 'Camera added successfully' });
-    })
-    .catch((error) => {
-      console.error('Error saving camera data:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    });
-});*/
 
 
 const usersettingsSchema = new mongoose.Schema({
@@ -346,7 +365,7 @@ const upload = multer({ storage: storage });
 
 // POST endpoint for file upload
 app.post('/api/upload', upload.single('file'), async (req, res) => {
- // const { formdata, userid } = req.body;
+ const { formData } = req.body;
 
  //console.log('userid:', userid);
   try {
@@ -407,6 +426,7 @@ app.get('/api/userroutine', (req, res) => {
         // Return the sources array from the user object
         const routine = user.usersettings;  
         res.status(200).json(routine);
+        console.log('the routines are:', routine);
       } else {
         // User not found
         res.status(404).json({ error: 'User not found' });
@@ -418,7 +438,32 @@ app.get('/api/userroutine', (req, res) => {
     });
 });
 
-
+app.post('/api/deleteRoutin',  async (req, res) => {
+  // Retrieve the logged-in user's username from the request
+  const {userid, routineName } = req.body;
+  console.log('delete routine',userid,routineName);
+  try {
+    const userIdObject = new ObjectId(userid);
+    const user = await Login.findById(userIdObject);
+    console.log('userid ',userid);
+    if (user) {
+      if (!user.usersettings || user.usersettings.length === 0) {
+        user.usersettings = [{ routines: [] }]; // Create the source array and initialize it with an empty object
+      }
+      //user.source[0].cameras.filter({ name: cameraName});
+      user.usersettings[0].routines = user.usersettings[0].routines.filter((routines) => routines.RoutineName !== routineName);
+      await user.save();
+      console.log({ name: routineName })
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (error) {
+    console.error('Error adding camera to user:', error);
+    res.sendStatus(500);
+  }
+  });
+ 
 
 app.get('/api/usercameras', (req, res) => {
   // Retrieve the logged-in user's username from the request
@@ -443,6 +488,30 @@ app.get('/api/usercameras', (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     });
 });
+app.post('/api/deleteCamera', async (req, res) => {
+  const { userid, cameraName } = req.body;
+console.log('deleteeeeee',cameraName);
+try {
+  const userIdObject = new ObjectId(userid);
+  const user = await Login.findById(userIdObject);
+  if (user) {
+    if (!user.source || user.source.length === 0) {
+      user.source = [{ cameras: [] }]; // Create the source array and initialize it with an empty object
+    }
+    //user.source[0].cameras.filter({ name: cameraName});
+    user.source[0].cameras = user.source[0].cameras.filter((camera) => camera.name !== cameraName);
+    await user.save();
+    console.log({ name: cameraName })
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(404);
+  }
+} catch (error) {
+  console.error('Error adding camera to user:', error);
+  res.sendStatus(500);
+}
+});
+  
 
 // Start the server
 const port = 4000;
@@ -452,3 +521,278 @@ app.listen(port, () => {
 
 
 
+
+// Define the add camera route
+/*const addcameraSchema = new mongoose.Schema({
+  username:String,
+  name: String,
+  code: String,
+  source: String,
+});*/
+/*app.post('/api/routincheck', async (req, res) => {
+  const { user_ID, routineName} = req.body;
+console.log('chake:',user_ID, routineName);
+  try {
+    const userIdObject = new ObjectId(user_ID);
+    const user = await Login.findById(userIdObject);
+    
+    if (user) {
+      user.usersettings = [{ routines: [] }];
+
+      const routines = user.usersettings[0].routines;
+      const existingRoutine = routines.find((routine) => routine.RoutineName === routineName);
+
+      if (existingRoutine) {
+        // If routine already exists, update its settings
+        //existingRoutine.sourceselected = selectedsource;
+       // existingRoutine.ModelSelected = selectedmodel;
+       // existingRoutine.messageselect = message;
+        await user.save();
+        console.log('Routine already exists:', existingRoutine);
+        res.status(200).json(existingRoutine);
+      } else {
+        // If routine doesn't exist, create a new one and add it to routines array
+        routines.push({
+          RoutineName: routineName,
+        });
+        await user.save();
+      }
+       }
+  } catch (error) {
+    console.error('Error:', error);
+    //res.sendStatus(500);
+  }
+});*/
+
+/*app.post('/api/addsourceselected', async (req, res) => {
+  const { userid, routineName, selectedsource, selectedmodel, selectedmessage } = req.body;
+  console.log({ userid, routineName, selectedsource, selectedmodel, selectedmessage });
+
+  try {
+    const userIdObject = new ObjectId(userid);
+    const user = await Login.findById(userIdObject);
+    let message = '';
+
+    if (user) {
+      if (selectedmessage === 'EMAIL') {
+        const email = user.email;
+        message = email;
+      } else if (selectedmessage === 'SMS' || selectedmessage === 'WHATSAPP') {
+        const phone = user.phone;
+        console.log('Phone:', phone);
+        message = phone;
+      } else {
+        const email = user.email;
+        console.log('Email:', email);
+        message = email;
+      }
+      const routines = user.usersettings[0].routines;
+
+      // Debug the retrieved data
+      console.log("Existing Routines:", routines);
+      
+      const existingRoutineIndex = routines.findIndex((routine) => routine.RoutineName === routineName);
+      
+      if (existingRoutineIndex ){//!== -1) {
+        // If routine already exists, update its settings
+        const existingRoutine = routines[existingRoutineIndex];
+        existingRoutine.sourceselected = selectedsource;
+        existingRoutine.ModelSelected = selectedmodel;
+        existingRoutine.messageselect = message;
+        await user.save();
+        console.log('Routine already exists:', existingRoutine);
+        res.status(200).json(existingRoutine); // Send the existingRoutine data back as a response
+      } else {
+        // If routine doesn't exist, create a new one and add it to routines array
+        const newRoutine = {
+          RoutineName: routineName,
+          sourceselected: selectedsource,
+          ModelSelected: selectedmodel,
+          messageselect: message,
+        };
+        routines.push(newRoutine);
+        await user.save();
+        console.log('New Routine added:', newRoutine);
+        res.status(200).json(newRoutine); // Send the newly added routine data as a response
+      }
+      /*const routines = user.usersettings[0].routines;
+      const existingRoutineIndex = routines.findIndex((routine) => routine.RoutineName === routineName);
+
+      if (existingRoutineIndex !== -1) {
+        // If routine already exists, update its settings
+        const existingRoutine = routines[existingRoutineIndex];
+        existingRoutine.sourceselected = selectedsource;
+        existingRoutine.ModelSelected = selectedmodel;
+        existingRoutine.messageselect = message;
+        await user.save();
+        console.log('Routine already exists:', existingRoutine);
+        res.status(200).json(existingRoutine); // Send the existingRoutine data back as a response
+      } else {
+        // If routine doesn't exist, create a new one and add it to routines array
+        routines.push({
+          RoutineName: routineName,
+          sourceselected: selectedsource,
+          ModelSelected: selectedmodel,
+          messageselect: message,
+        });
+        await user.save();
+        res.status(200).json(routines[routines.length - 1]); // Send the newly added routine data as a response
+      }
+
+      console.log({
+        RoutineName: routineName,
+        sourceselected: selectedsource,
+        ModelSelected: selectedmodel,
+        messageselect: message,
+      });
+      console.log('detect');
+
+      const model = selectedmodel;
+      const source = selectedsource;
+      /*await axios.post('http://localhost:5000/maifocus/detect/', {
+        model,
+        source,
+        message,
+      }, {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // res.sendStatus(200);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    // res.sendStatus(500);
+  }
+});*/
+ // Query the database to retrieve the user's sources
+  /*const userIdObject = new ObjectId(user_ID);
+  Login.findById(userIdObject)
+    .then((user) => {
+      if (user) {
+        // Return the sources array from the user object
+        const routine = user.usersettings;  
+        res.status(200).json(routine);
+        console.log('the routines are:', routine);
+      } else {
+        // User not found
+        res.status(404).json({ error: 'User not found' });
+      }
+    })
+    .catch((error) => {
+      console.error('Error fetching user sources:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    });
+});*/
+
+
+/*app.post('/api/add-camera', (req, res) => {
+  // Access the add camera data from the request body
+  const { username,name, code, source } = req.body;
+
+  // Save the data to MongoDB
+  const addCameraData = {
+    username,
+    name,
+    code,
+    source,
+  };
+
+// Create the model for the add camera
+const AddCamera = mongoose.model('AddCamera', addcameraSchema);
+  AddCamera.create(addCameraData)
+    .then((data) => {
+      console.log('Camera data saved to MongoDB:', data);
+      res.status(200).json({ message: 'Camera added successfully' });
+    })
+    .catch((error) => {
+      console.error('Error saving camera data:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    });
+});*/
+/*app.post('/api/addsourceselected', async (req, res) => {
+  const { userid, routineName, selectedsource, selectedmodel, selectedmessage } = req.body;
+  console.log({ userid, routineName, selectedsource, selectedmodel, selectedmessage });
+ 
+  try {
+    const userIdObject = new ObjectId(userid);
+    const user = await Login.findById(userIdObject);
+    let message = '';
+    if (user) {
+      if (selectedmessage === 'EMAIL') {
+        //const loginData = await Login.findOne({});
+        const email = user.email;
+        //console.log('Email:', email);
+        message = email;
+      } else if (selectedmessage === 'SMS' || selectedmessage === 'WHATSAPP') {
+        //const loginData = await Login.findOne({});
+        const phone = user.phone;
+        console.log('Phone:', phone);
+        message = phone;
+      } else {
+       // const loginData = await Login.findOne({});
+        const email = user.email;
+        console.log('Email:', email);
+        message = email;
+      };
+       const routines = user.usersettings[0].routines;
+   
+     routines.push({
+         RoutineName: routineName,
+         sourceselected: selectedsource,
+         ModelSelected: selectedmodel,
+         messageselect: message,
+       });
+        await user.save();
+        console.log({
+          RoutineName: routineName,
+          sourceselected: selectedsource,
+          ModelSelected: selectedmodel,
+          messageselect: message
+        });
+        console.log('detect');
+        const model = selectedmodel;
+        const source = selectedsource;
+        await axios.post('http://localhost:5000/maifocus/detect/', {
+          model,
+          source,
+          message
+    }, {
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+     
+    });
+        res.sendStatus(200);
+    
+  }} catch (error) {
+    console.error('Error:', error);
+  //  res.sendStatus(500);
+}
+});*/
+
+/*app.post('/api/addroutine', async (req, res) => {
+  const { userid, RoutineName } = req.body;
+  console.log({'routine ':RoutineName});
+  try {
+    const userIdObject = new ObjectId(userid);
+    const user = await Login.findById(userIdObject);
+    if (user) {
+      if (!user.usersettings || user.usersettings.length === 0) {
+        user.usersettings = [{ routines: [] }]; // Create the source array and initialize it with an empty object
+      }
+      user.usersettings[0].routines.push({ RoutineName: RoutineName });
+      await user.save();
+      //console.log({ name: RoutineName })
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (error) {
+    console.error('Error adding routine to user:', error);
+    res.sendStatus(500);
+  }
+});*/
