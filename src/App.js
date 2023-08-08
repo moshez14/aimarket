@@ -27,7 +27,7 @@ function App() {
   const [user_ID ,setUserId]= useState([]);;
   const ChackRoutineSubmit = async (submittedRoutineName) => { // Receive the routineName as an argument
     try {
-      const response = await axios.post('http://localhost:4000/api/routincheck', {
+      const response = await axios.post('http://www.maifocus.com:4000/api/routincheck', {
         user_ID: user_ID,
         routineName: submittedRoutineName, // Use the passed routineName here
       });
@@ -79,7 +79,7 @@ function App() {
  
   const fetchMessages = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/messages');
+      const response = await axios.get('http://www.maifocus.com:4000/api/messages');
       setMessages(response.data);
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -93,7 +93,7 @@ function App() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/api/login', {
+      const response = await axios.post('http://www.maifocus.com:4000/api/login', {
         name: loginUsername,
         password: loginPassword,
       });
@@ -206,7 +206,7 @@ function App() {
 
   useEffect(() => {
     // Make an HTTP request to the Flask API endpoint
-    axios.post('http://localhost:5000/maifocus/detect/')
+    axios.post('http://www.maifocus.com:5000/maifocus/detect/')
       .then(response => {
         // Update the state with the detected object information
         setObjectDetected(response.data.object_detected);

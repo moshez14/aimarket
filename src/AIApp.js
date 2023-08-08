@@ -76,7 +76,7 @@ const AIApp = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/api/login', {
+      const response = await axios.post('http://www.maifocus.com:4000/api/login', {
         name: loginUsername,
         password: loginPassword,
       });

@@ -9,7 +9,7 @@ function AddFile({ user_ID, onSubmitFile }) {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:4000/api/upload', {
+      const response = await fetch('http://www.maifocus.com:4000/api/upload', {
         method: 'POST',
         body: formData,
       });
@@ -30,7 +30,7 @@ const handleFileSelect = async (event) => {
     formData.append('file', file);
   
     try {
-      const response = await axios.post('http://localhost:4000/api/upload', formData);
+      const response = await axios.post('http://www.maifocus.com:4000/api/upload', formData);
       const fileUrl = response.data.link; // Corrected property name
       console.log('Response from server:', fileUrl);
       setFileurl(fileUrl)

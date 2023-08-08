@@ -35,7 +35,7 @@ function SelectedSource({ onSourceChange, user_ID }) {
    setcameraRtmp (selectedFileObj.link);
   }
     try { 
-    await axios.post('http://localhost:4000/api/addsourceseleced', {
+    await axios.post('http://www.maifocus.com:4000/api/addsourceseleced', {
       userid: user_ID,
       selectedsource: cameraRTMP
     });
@@ -47,7 +47,7 @@ function SelectedSource({ onSourceChange, user_ID }) {
 
   const fetchSources = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/usercameras', {
+      const response = await axios.get('http://www.maifocus.com:4000/api/usercameras', {
         params: {
           user_ID: user_ID,
         },

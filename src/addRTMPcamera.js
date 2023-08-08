@@ -21,7 +21,7 @@ function AddRTMPcamera({ user_ID, onSubmitRTMPcamera }) {
 
   const fetchSources = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/usercameras', {
+      const response = await axios.get('http://www.maifoccus.com:4000/api/usercameras', {
         params: {
           user_ID: user_ID,
         },
@@ -71,7 +71,7 @@ function AddRTMPcamera({ user_ID, onSubmitRTMPcamera }) {
   const cameradelete = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:4000/api/deleteCamera', {
+      await axios.post('http://www.maifoccus.com:4000/api/deleteCamera', {
         userid: user_ID,
         cameraName: selectedCamera,
       });
@@ -83,7 +83,7 @@ function AddRTMPcamera({ user_ID, onSubmitRTMPcamera }) {
 
   const submitCameraDataToMongoDB = async () => {
     try {
-      await axios.post('http://localhost:4000/api/addCamera', {
+      await axios.post('http://www.maifoccus.com:4000/api/addCamera', {
         userid: user_ID,
         cameraName: cameraName,
         cameraCode: cameraCode,

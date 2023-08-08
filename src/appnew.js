@@ -64,7 +64,7 @@ function App() {
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/messages');
+      const response = await axios.get('http://www.maifocus.com:4000/api/messages');
       setMessages(response.data);
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -81,7 +81,7 @@ function App() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/api/login', {
+      const response = await axios.post('http://www.maifocus.com:4000/api/login', {
         name: loginUsername,
         password: loginPassword,
       });

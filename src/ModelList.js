@@ -7,7 +7,7 @@ const ModelList = () => {
   useEffect(() => {
     const fetchAIModelObject = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/AIModelObject');
+        const response = await axios.get('http://www.maifocus.cm:4000/api/AIModelObject');
         setAIModelObject(response.data);
       } catch (error) {
         console.error('Error fetching models:', error);

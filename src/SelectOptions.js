@@ -18,7 +18,7 @@ function SelectOptions({ user_ID, routineName, onsubmitmessage }) {
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/messages');
+      const response = await axios.get('http://www.maifocus.com:4000/api/messages');
       setMessages(response.data);
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -78,7 +78,7 @@ function SelectOptions({ user_ID, routineName, onsubmitmessage }) {
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/messages');
+      const response = await axios.get('http://www.maifocus.com:4000/api/messages');
       setMessages(response.data);
     } catch (error) {
       console.error('Error fetching messages:', error);

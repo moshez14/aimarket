@@ -12,9 +12,9 @@ function SubmitDataToMongoDB({ user_ID, routineName, SelectedSource, SelectedMod
 
   const submitDataToMongoDB = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/addsourceselected', {
+      const response = await axios.post('http://www.maifocus.com:4000/api/addsourceselected', {
 
-      //await axios.post('http://localhost:4000/api/addsourceselected', {
+      //await axios.post('http://www.maifocus.com:4000/api/addsourceselected', {
         userid: user_ID,
         routineName: routineName,
         selectedsource: SelectedSource,

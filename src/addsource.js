@@ -37,7 +37,7 @@ function Addsource({ user_ID, username }) {
       const submitDataToMongoDB = async (e) => {
         e.preventDefault();
         try { 
-        await axios.post('http://localhost:4000/api/addCamera', {
+        await axios.post('http://www.maifocus.com:4000/api/addCamera', {
           userid: user_ID,
           cameraName: cameraName,
           cameraCode: cameraCode,
@@ -54,10 +54,10 @@ function Addsource({ user_ID, username }) {
         formData.append('file', file);
       
         try {
-          const response = await axios.post('http://localhost:4000/api/upload',formData);
+          const response = await axios.post('http://www.maifocus.com:4000/api/upload',formData);
           const fileUrl = response.data.link; // Corrected property name
           console.log('Response from server:', fileUrl);
-          await axios.post('http://localhost:4000/api/addfileLink', {
+          await axios.post('http://www.maifocus.com:4000/api/addfileLink', {
           userid: user_ID,
           fileUrl: fileUrl,
           username: username,

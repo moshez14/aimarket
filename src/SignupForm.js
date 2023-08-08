@@ -12,7 +12,7 @@ const SignupFormComponent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/api/signup', {
+      const response = await axios.post('http://www.maifocus.com:4000/api/signup', {
         name,
         password,
         email,
@@ -23,7 +23,7 @@ const SignupFormComponent = () => {
     setSignupError('');
   } catch (error) {
     console.error('Error during signup:', error);
-    setSignupError('Error during signup. Please try again.');
+    setSignupError('Error during signup. Please try again.',error);
     setSignupSuccess(false);
     }
   };

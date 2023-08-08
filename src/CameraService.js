@@ -16,7 +16,7 @@ async function addCameraToMongoDB(username, name, source) {
     const code = generateUniqueCode();
 
    // Send the code, name, and source to the server
-    const response = await axios.post('http://localhost:4000/api/add-camera', {
+    const response = await axios.post('http://www.maifocus.com:4000/api/add-camera', {
       username: username,
       code: code,
       name: name,

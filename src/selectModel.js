@@ -16,7 +16,7 @@ function SelectModel({ user_ID, routineName, onSubmitModel }) {
 
   const fetchModels = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/AIModelObject');
+      const response = await axios.get('http://www.maifocus.com:4000/api/AIModelObject');
       setModels(response.data);
     } catch (error) {
       console.error('Error fetching Models:', error);
@@ -74,7 +74,7 @@ function SelectModel({ user_ID, routineName, onSubmitModel }) {
 
   const fetchModels = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/AIModelObject');
+      const response = await axios.get('http://www.maifocus.com:4000/api/AIModelObject');
       setModels(response.data);
     } catch (error) {
       console.error('Error fetching Models:', error);

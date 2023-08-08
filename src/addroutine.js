@@ -43,7 +43,7 @@ function Addroutine({ user_ID, onSubmitRoutine }) {
 
   const fetchSources = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/userroutine', {
+      const response = await axios.get('http://www.maifocus.com:4000/api/userroutine', {
         params: {
           user_ID: user_ID,
         },
@@ -73,7 +73,7 @@ function Addroutine({ user_ID, onSubmitRoutine }) {
 const routindelete  = async (e) => {
   e.preventDefault();
   try {
-    await axios.post('http://localhost:4000/api/deleteRoutin', {
+    await axios.post('http://www.maifocus.com:4000/api/deleteRoutin', {
       userid: user_ID,
       routineName: selectedRoutine,
     });
@@ -85,7 +85,7 @@ const routindelete  = async (e) => {
 const deleteRoutine = async (e) => {
   e.preventDefault();
   try {
-    await axios.post('http://localhost:4000/api/deleteRoutin', {
+    await axios.post('http://www.maifocus.com:4000/api/deleteRoutin', {
       userid: user_ID,
       routineName: selectedRoutine,
     });

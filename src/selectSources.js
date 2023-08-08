@@ -23,7 +23,7 @@ function Selectsources({ user_ID, routineName, onSubmitsource }) {
 
   const fetchsources = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/source');
+      const response = await axios.get('http://www.maifocus.com:4000/api/source');
       setsources(response.data);
     } catch (error) {
       console.error('Error fetching sources:', error);
@@ -104,7 +104,7 @@ function Selectsources({ user_ID, routineName, onSubmitsource }) {
     setsourceselected(Link);
 
     try {
-      const response = await axios.post('http://localhost:4000/api/addLink', {
+      const response = await axios.post('http://www.maifocus.com:4000/api/addLink', {
         link: Link,
       });
       console.log('Login successful:', response.data);
@@ -202,7 +202,7 @@ function Selectsources({ user_ID, routineName, onSubmitsource }) {
 
   const fetchsources = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/source');
+      const response = await axios.get('http://www.maifocus.com:4000/api/source');
       setsources(response.data);
     } catch (error) {
       console.error('Error fetching sources:', error);
@@ -267,7 +267,7 @@ const [submittedHLScamera, setSubmittedHLScamera] = useState('');
     setsourceselected(Link);
     
     try {
-      const response = await axios.post('http://localhost:4000/api/addLink', {
+      const response = await axios.post('http://www.maifocus.com:4000/api/addLink', {
         link: Link,
       });
       console.log('Login successful:', response.data);
